@@ -241,6 +241,7 @@ public class Lab5 {
             }
 
         }
+        System.out.println();
 //        It should then ask for the book they want to check out. This can be done one of three ways.
 //        ISBN
 //        Name - this can be a partial name, if more than one name matches, allow the user to select.
@@ -259,7 +260,7 @@ public class Lab5 {
         myPanel.add(field1);
         myPanel.add(new JLabel("OR Enter book name, partial OK:"));
         myPanel.add(field2);
-        myPanel.add(new JLabel("OR Enter author name:"));
+        myPanel.add(new JLabel("OR Enter author first or last name:"));
         myPanel.add(field3);
         String selectedBook="";
         result = JOptionPane.showConfirmDialog(null, myPanel,
@@ -273,14 +274,17 @@ public class Lab5 {
         switch(selectedBook){
             case("ISBN"):
                 ret=execQuery("Query","SELECT * from Book where ISBN = '"+field1.getText()+"'");
-                System.out.print("SELECT * from Book where ISBN = "+field1.getText());
+//                System.out.println("SELECT * from Book where ISBN = "+field1.getText());
                 break;
             case("Book Name"):
                 ret=execQuery("Query","SELECT * from Book where Title LIKE '%"+field2.getText()+"%'");
-                System.out.print("SELECT * from Book where Title LIKE '%"+field2.getText()+"%'");
+//                System.out.println("SELECT * from Book where Title LIKE '%"+field2.getText()+"%'");
                 break;
             case("Author"):
-                ret=execQuery("Query","SELECT * from Book where ISBN = "+field1.getText());
+                ret=execQuery("Query","SELECT b.ISBN, Title FROM Book b INNER JOIN WrittenBy w " +
+                        "INNER JOIN Author a ON b.ISBN=w.ISBN AND w.AuthorID = a.AuthorID" +
+                        " WHERE a.FirstName LIKE '%"+field3.getText()+"%' or a.LastName LIKE '%"+field3.getText()+"%'"
+                );
                 break;
         }
         if(!ret.equalsIgnoreCase("No Data")) {
